@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crumdale Specialty | Territory Map</title>
+<style>
+  :root {
+    --bg: #f3f6fb;
+    --bg-alt: #ebf0f7;
+    --panel: rgba(255,255,255,0.9);
+    --panel-strong: #ffffff;
+    --panel-soft: #f8fafc;
+    --line: #dfe7f2;
+    --line-strong: #c8d4e5;
+    --text: #1d2433;
+    --muted: #5d6a7d;
+    --soft: #8191ae;
+    --bob: #3867a8;
+    --bob-soft: rgba(56,103,168,0.12);
+    --will: #4b9278;
+    --will-soft: rgba(75,146,120,0.12);
+    --greg: #76559d;
+    --greg-soft: rgba(118,85,157,0.12);
+    --kristen: #c46f58;
+    --kristen-soft: rgba(196,111,88,0.12);
+    --gold: #d9a93b;
+    --gold-soft: rgba(217,169,59,0.12);
+    --coral: #ef7a6a;
+    --coral-soft: rgba(239,122,106,0.12);
+    --rose: #ef6b9b;
+    --rose-soft: rgba(239,107,155,0.12);
+    --shadow: rgba(22, 28, 42, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(95,127,232,0.10), transparent 24%),
+      radial-gradient(circle at top right, rgba(57,183,134,0.10), transparent 26%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+    color: var(--text);
+    padding: 18px;
+  }
+
+  .shell {
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,248,252,0.96));
+    border: 1px solid var(--line);
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
+    padding: 18px 22px 16px;
+    box-shadow: 0 10px 24px var(--shadow);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-mark {
+    width: 42px; height: 42px; border-radius: 14px;
+    background: linear-gradient(135deg, #dfeaff, #c9d8ff);
+    display: flex; align-items:center; justify-content:center;
+    font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
+    color: #243652;
+    border: 1px solid rgba(95,127,232,0.18);
+  }
+  .brand-name {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text);
+  }
+  .brand-sub {
+    margin-top: 3px;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .meta {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .focus-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(95,127,232,0.08);
+    border: 1px solid rgba(95,127,232,0.16);
+    color: #40588e;
+    padding: 6px 10px; border-radius: 999px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  }
+  .focus-pill::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--bob); box-shadow: 0 0 0 5px rgba(95,127,232,0.10);
+  }
+
+  .dashboard {
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,248,252,0.95));
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 18px 32px var(--shadow);
+    overflow: hidden;
+  }
+
+  .content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(310px, 0.72fr);
+    min-height: 760px;
+  }
+
+  .map-panel {
+    padding: 16px 16px 12px;
+    border-right: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(247,250,253,0.92), rgba(241,245,250,0.96));
+  }
+
+  .map-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px; padding: 2px 4px 0;
+  }
+  .map-toolbar h2 {
+    font-size: 15px; font-weight: 700; color: var(--text);
+  }
+  .mini-badge {
+    font-size: 9px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+    color: #45608e; background: rgba(95,127,232,0.08); border: 1px solid rgba(95,127,232,0.18); border-radius: 999px; padding: 6px 8px;
+  }
+
+  .map-wrap {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(242,247,252,0.92));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 600px;
+  }
+  #map-svg { width: 100%; height: 100%; display: block; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 12px 4px 0;
+  }
+  .li { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10.5px; }
+  .ld { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .sidebar {
+    background: linear-gradient(180deg, rgba(249,251,253,0.96), rgba(242,246,250,0.96));
+    padding: 12px 14px 16px;
+  }
+
+  .tab-row {
+    display: flex; gap: 6px; padding: 4px;
+    background: rgba(234,240,247,0.9);
+    border: 1px solid var(--line);
+    border-radius: 12px; margin-bottom: 12px;
+  }
+  .tab {
+    flex:1; text-align:center; padding:9px 8px; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); border-radius: 10px; cursor: pointer; border: 1px solid transparent; font-weight: 700;
+  }
+  .tab.active {
+    color: var(--text); background: linear-gradient(180deg, #ffffff, #f4f7fb); border-color: var(--line-strong); box-shadow: 0 8px 18px rgba(22,28,42,0.05);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .panel-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(245,249,253,0.96));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+  }
+
+  .exec-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,247,251,0.96));
+    border: 1px solid var(--line);
+    border-radius: 12px; overflow: hidden; margin-bottom: 10px;
+  }
+  .exec-head {
+    display: flex; align-items: center; gap: 10px; padding: 11px 12px; cursor: pointer;
+  }
+  .exec-avatar {
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: white; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.18);
+  }
+  .exec-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .exec-role { font-size: 11px; color: var(--muted); }
+  .chev { margin-left: auto; font-size: 11px; color: var(--soft); }
+  .exec-body {
+    display: none; border-top: 1px solid var(--line); padding: 10px 12px 12px; background: rgba(245,248,252,0.85);
+  }
+  .exec-card.open .exec-body { display: block; }
+  .profile-line {
+    display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(124,138,160,0.12);
+  }
+  .profile-line:last-child { border-bottom: none; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bob); }
+  .dot.warn { background: var(--gold); }
+  .dot.alert { background: var(--coral); }
+  .line-title { font-size: 12px; font-weight: 600; color: var(--text); }
+  .line-meta { font-size: 11px; color: var(--muted); }
+
+  .state-detail {
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,248,252,0.96));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .state-title {
+    font-size: 13px; font-weight: 800; letter-spacing: .08em; color: var(--text); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .state-box {
+    border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: rgba(240,244,250,0.8); margin-bottom: 10px;
+  }
+  .state-box .name { font-size: 14px; font-weight: 700; }
+  .state-box .role { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .metric-chip {
+    display:inline-block; border-radius:999px; padding:5px 8px; font-size:9px; letter-spacing:.08em; font-weight:800; text-transform:uppercase; border:1px solid transparent; margin-top:4px;
+  }
+  .metric-chip.good { background: rgba(57,183,134,0.12); color: #2a7d5e; border-color: rgba(57,183,134,0.18); }
+  .metric-chip.watch { background: rgba(217,169,59,0.12); color: #8d6911; border-color: rgba(217,169,59,0.18); }
+  .metric-chip.alert { background: rgba(239,122,106,0.12); color: #9a4337; border-color: rgba(239,122,106,0.18); }
+  .metric-chip.blue { background: rgba(95,127,232,0.12); color: #3c5fc3; border-color: rgba(95,127,232,0.18); }
+
+  .list-group { display: grid; gap: 6px; margin-top: 8px; }
+  .list-item {
+    border: 1px solid var(--line); border-radius: 10px; padding: 8px 9px; background: rgba(247,250,253,0.85);
+  }
+  .list-item strong { font-size: 12px; color: var(--text); }
+  .list-item .small { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .team-card {
+    background: rgba(247,250,253,0.8); border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+  }
+  .team-row {
+    display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(124,138,160,0.12);
+  }
+  .team-row:last-child { border-bottom: none; }
+  .team-avatar {
+    width: 30px; height: 30px; border-radius: 50%; display:flex; align-items:center; justify-content:center; color: white; font-size: 9px; font-weight: 800; flex-shrink:0; border:1px solid rgba(255,255,255,0.18);
+  }
+  .team-name { font-size: 12px; font-weight: 700; }
+  .team-role { font-size: 10px; color: var(--muted); }
+  .tag {
+    margin-left: auto; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; padding:4px 7px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; border:1px solid transparent;
+  }
+  .tag.vp { background: rgba(95,127,232,0.10); color: #3f5eb4; border-color: rgba(95,127,232,0.18); }
+  .tag.rsd { background: rgba(57,183,134,0.10); color: #2d7d61; border-color: rgba(57,183,134,0.18); }
+  .tag.sme { background: rgba(217,169,59,0.12); color: #866010; border-color: rgba(217,169,59,0.18); }
+  .tag.bdr { background: rgba(123,105,231,0.10); color: #5647a8; border-color: rgba(123,105,231,0.18); }
+
+  @media (max-width: 1100px) {
+    .content { grid-template-columns: 1fr; }
+    .map-panel { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">CS</div>
+      <div>
+        <div class="brand-name">Crumdale Specialty</div>
+        <div class="brand-sub">Territory Map</div>
+      </div>
+    </div>
+    <div class="meta">
+      <span class="focus-pill">Regional view</span>
+      <span id="last-updated"></span>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <div class="content">
+      <div class="map-panel">
+        <div class="map-toolbar">
+          <h2>National Active Territory Map</h2>
+          <span class="mini-badge">Coverage view</span>
+        </div>
+        <div class="map-wrap">
+          <svg id="map-svg" viewBox="0 0 960 600"></svg>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="sidebar">
+        <div class="tab-row">
+          <div class="tab active" id="tt" onclick="sw('t')">Territory</div>
+          <div class="tab" id="tb" onclick="sw('b')">Leadership</div>
+          <div class="tab" id="tbn" onclick="sw('bn')">TPA</div>
+          <div class="tab" id="ts" onclick="sw('s')" style="display:none">State</div>
+        </div>
+
+        <div class="tab-panel active" id="pt">
+          <div id="vpc"></div>
+        </div>
+
+        <div class="tab-panel" id="pb">
+          <div class="panel-card">
+            <div class="team-card">
+              <div class="team-row">
+                <div class="team-avatar" style="background:#2d3d59">BH</div>
+                <div style="flex:1">
+                  <div class="team-name">Buzz Hannum</div>
+                  <div class="team-role">Senior Vice President</div>
+                </div>
+                <span class="tag vp">SVP</span>
+              </div>
+              <div class="team-row">
+                <div class="team-avatar" style="background:#5f7fe8">BK</div>
+                <div style="flex:1">
+                  <div class="team-name">Bob Kelly</div>
+                  <div class="team-role">Northeast VP</div>
+                </div>
+                <span class="tag vp">VP</span>
+              </div>
+              <div class="team-row">
+                <div class="team-avatar" style="background:#39b786">WS</div>
+                <div style="flex:1">
+                  <div class="team-name">William Slocum</div>
+                  <div class="team-role">Mid-South VP</div>
+                </div>
+                <span class="tag vp">VP</span>
+              </div>
+              <div class="team-row">
+                <div class="team-avatar" style="background:#7b69e7">GB</div>
+                <div style="flex:1">
+                  <div class="team-name">Greg Blemlek</div>
+                  <div class="team-role">Far West VP</div>
+                </div>
+                <span class="tag vp">VP</span>
+              </div>
+              <div class="team-row">
+                <div class="team-avatar" style="background:#e78159">KS</div>
+                <div style="flex:1">
+                  <div class="team-name">Kristen Snell</div>
+                  <div class="team-role">Southeast VP</div>
+                </div>
+                <span class="tag vp">VP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="pbn">
+          <div class="panel-card">
+            <div class="team-card">
+              <div class="team-row">
+                <div class="team-avatar" style="background:#43d3a7">BI</div>
+                <div style="flex:1">
+                  <div class="team-name">Ben Inabinet</div>
+                  <div class="team-role">Head of TPA Sales</div>
+                </div>
+                <span class="tag vp">TPA</span>
+              </div>
+              <div class="team-row">
+                <div class="team-avatar" style="background:#0d1f2d">MP</div>
+                <div style="flex:1">
+                  <div class="team-name">Mark Popejoy</div>
+                  <div class="team-role">TPA RSD — Phoenix</div>
+                </div>
+                <span class="tag rsd">RSD</span>
+              </div>
+              <div class="team-row">
+                <div class="team-avatar" style="background:#0d1f2d">CM</div>
+                <div style="flex:1">
+                  <div class="team-name">Curt Mooney</div>
+                  <div class="team-role">TPA RSD — Texas</div>
+                </div>
+                <span class="tag rsd">RSD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="ps">
+          <div id="sd" class="state-detail">
+            <div class="state-title">State overview</div>
+            <div class="state-box">
+              <div class="name">Select a market</div>
+              <div class="role">Coverage, territory ownership, and hiring risk appear here.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+document.getElementById('last-updated').textContent = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+const START_DATES={"Bob Kelly":"4/13/2026","Kristen Snell":"5/11/2026","Steve Bjorn":"5/11/2026","Chuck Schuldt":"5/22/2023","Ricky Perez":"9/12/2022","David Barrett":"10/19/2022","Mike Zanchuk":"10/7/2024","Bri Calhoun":"10/7/2024","Brad Williams":"10/7/2024","Kyle Cluskey":"5/12/2025","Jameson Kahlich":"7/21/2025","Bryan Griffiths":"9/8/2025","Chip Harvey":"2/9/2026","Andrew Pertl":"2/9/2026","Joe Thedford":"5/11/2026","TJ McLeod":"7/27/2026","Mark Popejoy":"8/10/2026","Richard Horshaw":"7/27/2026","Aidan Flynn":"10/27/2025","William Slocum":"6/29/2026","Tonya Crawford":"4/8/2024","Vince Caruso":"6/5/2023","Greg Blemlek":"8/25/2025","Josh Timms":"8/10/2026","Alex Crouch":"9/28/2026","Keaton Powell":"11/16/2026","Taylor Neil":"10/12/2026","Michael Wilson":"9/8/2026","Curt Mooney":"8/31/2026"};
+const VPS=[
+  {id:"bob", in:"BK", name:"Bob Kelly", title:"Northeast", start:"4/13/2026", color:"#3867a8", cb:"rgba(56,103,168,0.12)", cbr:"rgba(56,103,168,0.38)", ct:"#234875", cs:"#527db5"},
+  {id:"will", in:"WS", name:"William Slocum", title:"Mid-South", start:"6/29/2026", color:"#4b9278", cb:"rgba(75,146,120,0.12)", cbr:"rgba(75,146,120,0.38)", ct:"#285b49", cs:"#5aa589"},
+  {id:"greg", in:"GB", name:"Greg Blemlek", title:"Far West", start:"8/25/2025", color:"#76559d", cb:"rgba(118,85,157,0.12)", cbr:"rgba(118,85,157,0.38)", ct:"#493467", cs:"#876ab0"},
+  {id:"kristen", in:"KS", name:"Kristen Snell", title:"Southeast", start:"5/11/2026", color:"#c46f58", cb:"rgba(196,111,88,0.12)", cbr:"rgba(196,111,88,0.38)", ct:"#703e32", cs:"#c47b66"}
+];
+const BUZZ_COLOR="#76559d";
+const TPA_DARK="#43d3a7";
+const BUZZ_TEAM=[
+  {in:"TC", name:"Tonya Crawford", role:"VP of Captive Solutions", type:"vp", color:"#7482b8", ll:[37.69,-97.34]},
+  {in:"BG", name:"Bryan Griffiths", role:"RSD — Captives", type:"rsd", color:"#5fa7d3", ll:[41.72,-93.62]},
+  {in:"RH", name:"Richard Horshaw", role:"Captive SME", type:"sme", color:"#d9a93b", ll:[40.09,-75.13]},
+  {in:"AF", name:"Aidan Flynn", role:"Business Development Rep", type:"bdr", color:"#9a8dff", ll:[39.94,-75.05]},
+  {in:"VC", name:"Vince Caruso", role:"Business Development Rep", type:"bdr", color:"#9a8dff", ll:[39.87,-75.25]},
+  {in:"MW", name:"Michael Wilson", role:"Captive RSD", type:"rsd", color:"#5fa7d3", ll:[28.70,-81.34]},
+  {in:"TN", name:"Taylor Neil", role:"Captive RSD", type:"rsd", color:"#5fa7d3", ll:[30.17,-96.40]}
+];
+const TT={vp:{l:"VP",bg:"rgba(95,127,232,0.10)",c:"#3f5eb4"},rsd:{l:"RSD",bg:"rgba(57,183,134,0.10)",c:"#2d7d61"},sme:{l:"SME",bg:"rgba(217,169,59,0.12)",c:"#866010"},bdr:{l:"BDR",bg:"rgba(123,105,231,0.10)",c:"#5647a8"}};
+const TPA_TEAM=[{in:"MP",name:"Mark Popejoy",role:"TPA RSD",ll:[33.58,-112.20]},{in:"CM",name:"Curt Mooney",role:"TPA RSD",ll:[33.24,-96.80]}];
+const HOT_STATES=["California","Washington","Utah","Wisconsin","Illinois","Indiana","Virginia","Florida","Louisiana","Georgia","North Carolina","Texas","Ohio"];
+const WARM_STATES=[];
+const HOT_PINS={California:[34.05,-118.24],Washington:[47.50,-120.50],Utah:[40.76,-111.89],Wisconsin:[44.52,-88.02],Illinois:[41.85,-87.65],Indiana:[39.77,-86.16],Virginia:[37.80,-79.00],Florida:[27.95,-82.46],Louisiana:[30.45,-91.18],Georgia:[33.75,-84.39],"North Carolina":[35.50,-79.50],Texas:[29.76,-95.37],Ohio:[39.10,-84.51]};
+const WARM_PINS={};
+const URGENT_PINS={Virginia:[38.65,-77.30]};
+const ST={Maine:{vpId:"bob",rsds:[{name:"TJ McLeod",market:"Southern Maine"}]},"New Hampshire":{vpId:"bob",rsds:[],hiring:true,hiringNote:"Open RSD position — NH / Mass market"},Massachusetts:{vpId:"bob",rsds:[],hiring:true,hiringNote:"Open RSD position — NH / Mass market"},Ohio:{vpId:"bob",rsds:[{name:"Steve Bjorn",market:"Cleveland"},{name:"Alex Crouch",market:"Columbus"}],hiring:true,hiringNote:"Open RSD position — Cincinnati market"},Indiana:{vpId:"bob",rsds:[]},Pennsylvania:{vpId:"bob",rsds:[],hiring:true,hiringNote:"Open RSD position — PA / NJ market"},"New Jersey":{vpId:"bob",rsds:[],hiring:true,hiringNote:"Open RSD position — PA / NJ market"},Virginia:{vpId:"bob",rsds:[],urgent:true,urgentNote:"Urgent hire needed — Virginia market"},Maryland:{vpId:"bob",rsds:[]},"New York":{vpId:"bob",rsds:[],hiring:true,hiringNote:"Open RSD position — Upstate New York market"},Connecticut:{vpId:"bob",rsds:[]},"Rhode Island":{vpId:"bob",rsds:[]},Vermont:{vpId:"bob",rsds:[]},Delaware:{vpId:"bob",rsds:[]},Kentucky:{vpId:"kristen",rsds:[{name:"Keaton Powell",market:"Louisville"}]},"West Virginia":{vpId:"bob",rsds:[]},Louisiana:{vpId:"will",rsds:[{name:"David Barrett",market:"Louisiana"}],hiring:true,hiringNote:"Additional RSD hiring needed — Louisiana market"},Texas:{vpId:"will",rsds:[{name:"Jameson Kahlich",market:"Waco area"},{name:"Andrew Pertl",market:"Amarillo area"},{name:"Josh Timms",market:"DFW"}],hiring:true,hiringNote:"Additional RSD hiring needed — Texas market"},Oklahoma:{vpId:"will",rsds:[{name:"Brad Williams",market:"Oklahoma"}]},Alabama:{vpId:"will",rsds:[],hiring:true,hiringNote:"Potential RSD hiring need — Alabama market"},Arkansas:{vpId:"will",rsds:[],hiring:true,hiringNote:"Potential RSD hiring need — Arkansas market"},Mississippi:{vpId:"will",rsds:[]},Colorado:{vpId:"greg",rsds:[]},Iowa:{vpId:"greg",rsds:[{name:"Kyle Cluskey",market:"Des Moines area"}]},Wisconsin:{vpId:"greg",rsds:[{name:"Chuck Schuldt",market:"Green Bay area"}]},Arizona:{vpId:"greg",rsds:[{name:"Joe Thedford",market:"Phoenix area"}]},Utah:{vpId:"greg",rsds:[],hiring:true,hiringNote:"Open RSD position — actively recruiting"},Nebraska:{vpId:"greg",rsds:[],hiring:true,hiringNote:"Open RSD position — actively recruiting"},Oregon:{vpId:"greg",rsds:[],possible:true,possibleNote:"Potential territory — RSD hiring under consideration"},Washington:{vpId:"greg",rsds:[],possible:true,possibleNote:"Potential territory — RSD hiring under consideration"},Idaho:{vpId:"greg",rsds:[]},Montana:{vpId:"greg",rsds:[]},Wyoming:{vpId:"greg",rsds:[]},Nevada:{vpId:"greg",rsds:[]},"New Mexico":{vpId:"greg",rsds:[]},"South Dakota":{vpId:"greg",rsds:[]},"North Dakota":{vpId:"greg",rsds:[]},Minnesota:{vpId:"greg",rsds:[]},Kansas:{vpId:"greg",rsds:[]},Missouri:{vpId:"greg",rsds:[]},Illinois:{vpId:"bob",rsds:[]},Michigan:{vpId:"bob",rsds:[]},California:{rsds:[]},Florida:{vpId:"kristen",rsds:[{name:"Ricky Perez",market:"Miami area"}],hiring:true,hiringNote:"Additional RSD hiring needed — Tampa / FL market"},"North Carolina":{vpId:"kristen",rsds:[{name:"Chip Harvey",market:"Raleigh area"}],hiring:true,hiringNote:"Additional RSD hiring needed — NC market"},Georgia:{vpId:"kristen",rsds:[{name:"Mike Zanchuk",market:"Atlanta area"}],hot:true},Tennessee:{vpId:"kristen",rsds:[{name:"Bri Calhoun",market:"Nashville area"}]},"South Carolina":{vpId:"kristen",rsds:[],hiring:true,hiringNote:"Open RSD position — South Carolina market"}};
+const RSD_LL={"TJ McLeod":[43.65,-70.26],"Steve Bjorn":[41.50,-81.69],"Alex Crouch":[39.96,-82.99],"David Barrett":[30.45,-91.18],"Jameson Kahlich":[31.55,-97.15],"Andrew Pertl":[35.22,-101.83],"Brad Williams":[35.47,-97.52],"Josh Timms":[32.78,-96.80],"Kyle Cluskey":[41.60,-93.62],"Chuck Schuldt":[44.52,-88.02],"Joe Thedford":[33.45,-112.07],"Ricky Perez":[25.77,-80.19],"Chip Harvey":[35.78,-78.64],"Mike Zanchuk":[33.75,-84.39],"Bri Calhoun":[36.17,-86.78],"Keaton Powell":[38.25,-85.76]};
+const RSD_ST={"TJ McLeod":"Maine","Steve Bjorn":"Ohio","Alex Crouch":"Ohio","David Barrett":"Louisiana","Jameson Kahlich":"Texas","Andrew Pertl":"Texas","Brad Williams":"Oklahoma","Josh Timms":"Texas","Kyle Cluskey":"Iowa","Chuck Schuldt":"Wisconsin","Joe Thedford":"Arizona","Ricky Perez":"Florida","Chip Harvey":"North Carolina","Mike Zanchuk":"Georgia","Bri Calhoun":"Tennessee","Keaton Powell":"Kentucky"};
+const RSD_VP={"TJ McLeod":"bob","Steve Bjorn":"bob","Alex Crouch":"bob","David Barrett":"will","Jameson Kahlich":"will","Andrew Pertl":"will","Brad Williams":"will","Josh Timms":"will","Kyle Cluskey":"greg","Chuck Schuldt":"greg","Joe Thedford":"greg","Ricky Perez":"kristen","Chip Harvey":"kristen","Mike Zanchuk":"kristen","Bri Calhoun":"kristen","Keaton Powell":"kristen"};
+const RSD_IN={"TJ McLeod":"TJM","Steve Bjorn":"SBj","Alex Crouch":"AC","David Barrett":"DB","Jameson Kahlich":"JK","Andrew Pertl":"AP","Brad Williams":"BW","Josh Timms":"JTi","Kyle Cluskey":"KC","Chuck Schuldt":"CS","Joe Thedford":"JT","Ricky Perez":"RP","Chip Harvey":"CH","Mike Zanchuk":"MZ","Bri Calhoun":"BC","Keaton Powell":"KP"};
+const HOT_COLOR="#e78159";
+const WARM_COLOR="#d9a93b";
+
+function fmt(d){if(!d)return null;const p=d.split('/');return`${p[0]}/${p[1]}/${p[2].slice(-2)}`;}
+let proj;
+function px(lat,lon){const p=proj([lon,lat]);return p||[0,0];}
+function gc(n){const d=ST[n];if(!d)return"#dfe5ef";const v=VPS.find(x=>x.id===d.vpId);return v?v.color:"#dfe5ef";}
+function go(n){const d=ST[n];if(!d)return 1;if(d.urgent)return 0.56;if(d.hiring)return 0.68;if(d.possible)return 0.45;return 1;}
+function dk(hex,a){let c=parseInt(hex.slice(1),16);let r=Math.max(0,(c>>16)-a),g=Math.max(0,((c>>8)&255)-a),b=Math.max(0,(c&255)-a);return '#'+(r<<16|g<<8|b).toString(16).padStart(6,'0');}
+function sw(tab){['t','b','bn','s'].forEach(t=>{const te=document.getElementById('t'+t),pe=document.getElementById('p'+t);if(te)te.classList.toggle('active',t===tab);if(pe)pe.classList.toggle('active',t===tab);});}
+function buildLegend(){
+  const l=document.getElementById('legend');l.innerHTML='';
+  VPS.forEach(v=>{const d=document.createElement('div');d.className='li';d.innerHTML=`<div class="ld" style="background:${v.color}"></div><span>${v.name}</span>`;l.appendChild(d);});
+  [{html:`<svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="6" fill="#9ab4d6"/><text x="6" y="8.8" text-anchor="middle" font-size="5" fill="#111827" font-family="sans-serif">RS</text></svg>`,lbl:"Territory RSD"},
+   {html:`<svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="6" fill="${TPA_DARK}"/><text x="6" y="8.8" text-anchor="middle" font-size="4.5" fill="#111827" font-family="sans-serif">TPA</text></svg>`,lbl:"TPA"},
+   {html:`<svg width="12" height="12" viewBox="0 0 12 12"><rect x="3" y="3" width="6" height="6" rx="1" transform="rotate(45 6 6)" fill="${BUZZ_COLOR}"/></svg>`,lbl:"Leadership"},
+   {html:`<svg width="10" height="14" viewBox="0 0 10 14"><path d="M5,13C2,9 0,7 0,4.5A5,5,0,0,1,10,4.5C10,7,8,9,5,13Z" fill="${HOT_COLOR}"/><text x="5" y="7" text-anchor="middle" font-size="6" fill="white" font-family="sans-serif">🔥</text></svg>`,lbl:"Hot market"},
+   {html:`<svg width="10" height="14" viewBox="0 0 10 14"><path d="M5,13C2,9 0,7 0,4.5A5,5,0,0,1,10,4.5C10,7,8,9,5,13Z" fill="${WARM_COLOR}"/><text x="5" y="7.5" text-anchor="middle" font-size="7" fill="#0f172a" font-family="sans-serif">★</text></svg>`,lbl:"Secondary"},
+   {html:`<svg width="10" height="14" viewBox="0 0 10 14"><path d="M5,13C2,9 0,7 0,4.5A5,5,0,0,1,10,4.5C10,7,8,9,5,13Z" fill="#ef6b9b"/><text x="5" y="7.2" text-anchor="middle" font-size="7" fill="white" font-family="sans-serif" font-weight="bold">!</text></svg>`,lbl:"Urgent"}
+  ].forEach(x=>{const d=document.createElement('div');d.className='li';d.innerHTML=`${x.html}<span>${x.lbl}</span>`;l.appendChild(d);});
+  const u=document.createElement('div');u.className='li';u.innerHTML=`<div class="ld" style="background:#dfe5ef"></div><span>Unassigned</span>`;l.appendChild(u);
+}
+
+function buildVPCards(){
+  const c=document.getElementById('vpc');c.innerHTML='';
+  VPS.forEach(v=>{
+    const vs=Object.entries(ST).filter(([,d])=>d&&d.vpId===v.id);
+    const rs=[...new Map(vs.flatMap(([,d])=>(d.rsds||[]).map(r=>[r.name,r])).filter(([k])=>k)).values()];
+    const os=vs.filter(([,d])=>d.hiring||d.possible);
+    const urg=vs.filter(([,d])=>d.urgent);
+    const hotT=HOT_STATES.filter(s=>ST[s]&&ST[s].vpId===v.id);
+    const card=document.createElement('div');card.className='exec-card';
+    const startLine=v.start?`<div class="exec-role">Started ${fmt(v.start)}</div>`:'';
+    card.innerHTML=`<div class="exec-head" onclick="this.parentElement.classList.toggle('open')">
+      <div class="exec-avatar" style="background:${v.color}">${v.in}</div>
+      <div style="flex:1; min-width:0;">
+        <div class="exec-name">${v.name}</div>
+        <div class="exec-role">VP · ${v.title} · ${rs.length} RSDs</div>${startLine}
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="exec-body">
+      ${rs.map(r=>{const sd=START_DATES[r.name];return `<div class="profile-line"><div class="dot" style="background:${v.color}"></div><div style="flex:1"><div class="line-title">${r.name}</div><div class="line-meta">${r.market}</div></div>${sd?`<div class="line-meta">${fmt(sd)}</div>`:''}</div>`;}).join('')}
+      ${urg.length?`<div class="profile-line"><div class="dot alert"></div><div style="flex:1"><div class="line-title">Urgent hire required</div><div class="line-meta">${urg.map(([n])=>n).join(', ')}</div></div></div>`:''}
+      ${hotT.length?`<div class="profile-line"><div class="dot warn"></div><div style="flex:1"><div class="line-title">Hot markets</div><div class="line-meta">${hotT.join(', ')}</div></div></div>`:''}
+      ${os.length?`<div class="profile-line"><div class="dot"></div><div style="flex:1"><div class="line-title">Hiring / possible</div><div class="line-meta">${os.map(([n,d])=>`${n}${d.possible? ' (possible)':''}`).join(', ')}</div></div></div>`:''}
+    </div>`;
+    c.appendChild(card);
+  });
+}
+
+function buildBuzz(){
+  const c=document.getElementById('bt');if(!c)return; c.innerHTML='';
+  BUZZ_TEAM.forEach(p=>{
+    const tag=TT[p.type]||{l:'SME',bg:'rgba(217,169,59,0.12)',c:'#866010'};
+    const row=document.createElement('div');row.className='team-row';
+    row.innerHTML=`<div class="team-avatar" style="background:${p.color}">${p.in}</div><div style="flex:1"><div class="team-name">${p.name}</div><div class="team-role">${p.role}</div></div><span class="tag ${p.type}">${tag.l}</span>`;
+    c.appendChild(row);
+  });
+}
+
+function showMarket(name,tier){
+  const ts=document.getElementById('ts');if(ts){ts.style.display='block';ts.textContent=name.length>6?name.substring(0,5)+'…':name;}
+  sw('s');
+  const det=document.getElementById('sd');
+  const d=ST[name];const v=d&&VPS.find(x=>x.id===d.vpId);const rs=d?d.rsds||[]:[];
+  let h=`<div class="state-title">${name}</div>`;
+  if(v){
+    const vsd=v.start?`<div class="line-meta">Started ${fmt(v.start)}</div>`:'';
+    h+=`<div class="state-box" style="background:${v.cb};border-color:${v.cbr}"><div class="name" style="color:${v.ct}">${v.name}</div><div class="role" style="color:${v.cs}">${v.title}</div>${vsd}</div>`;
+  }
+  if(rs.length){h+=`<div class="list-group">${rs.map(r=>`<div class="list-item"><strong>${r.name}</strong><div class="small">${r.market}</div>${START_DATES[r.name]?`<div class="small">Started ${fmt(START_DATES[r.name])}</div>`:''}</div>`).join('')}</div>`;}
+  h+=`<div style="margin-top:10px;">`;
+  if(tier==='hot'){ h+=`<span class="metric-chip alert">Hot recruitment market</span><div class="list-item" style="margin-top:8px"><strong>Priority market focus</strong><div class="small">Recruitment priority for additional health benefits coverage.</div></div>`; }
+  else { h+=`<span class="metric-chip watch">Secondary market</span><div class="list-item" style="margin-top:8px"><strong>Development opportunity</strong><div class="small">Secondary priority for additional sales coverage.</div></div>`; }
+  if(d&&d.urgent)h+=`<div class="list-item" style="margin-top:8px"><strong>Urgent hire</strong><div class="small">${d.urgentNote}</div></div>`;
+  else if(d&&d.hiring)h+=`<div class="list-item" style="margin-top:8px"><strong>Hiring</strong><div class="small">${d.hiringNote||'Open recruitment opportunity.'}</div></div>`;
+  h+=`</div>`;
+  det.innerHTML=h;
+}
+
+function selState(name){
+  d3.selectAll('.state').classed('sel',false);
+  d3.selectAll('.state').filter(d=>d.properties.name===name).classed('sel',true);
+  if(HOT_STATES.includes(name)){showMarket(name,'hot');return;}
+  if(WARM_STATES.includes(name)){showMarket(name,'warm');return;}
+  const ts=document.getElementById('ts');if(ts){ts.style.display='block';ts.textContent=name.length>6?name.substring(0,5)+'…':name;}
+  sw('s');
+  const d=ST[name],det=document.getElementById('sd');
+  if(!d){det.innerHTML=`<div class="state-title">${name}</div><div class="state-box"><div class="name">No active territory</div><div class="role">This market is not assigned to a current regional VP.</div></div>`;return;}
+  const v=VPS.find(x=>x.id===d.vpId),rs=d.rsds||[];
+  let h=`<div class="state-title">${name}</div>`;
+  if(v){const vsd=v.start?`<div class="line-meta">Started ${fmt(v.start)}</div>`:'';h+=`<div class="state-box" style="background:${v.cb};border-color:${v.cbr}"><div class="name" style="color:${v.ct}">${v.name}</div><div class="role" style="color:${v.cs}">${v.title}</div>${vsd}</div>`;}
+  if(rs.length){h+=`<div class="list-group">${rs.map(r=>`<div class="list-item"><strong>${r.name}</strong><div class="small">${r.market}</div>${START_DATES[r.name]?`<div class="small">Started ${fmt(START_DATES[r.name])}</div>`:''}</div>`).join('')}</div>`;} else {h+=`<div class="state-box"><div class="name">No assigned RSDs</div><div class="role">This region remains open for coverage planning.</div></div>`;}
+  h+=`<div style="margin-top:10px;">`;
+  if(d.urgent)h+=`<span class="metric-chip alert">Urgent hire</span><div class="list-item" style="margin-top:8px"><strong>Priority requirement</strong><div class="small">${d.urgentNote}</div></div>`;
+  else if(d.hiring&&rs.length)h+=`<span class="metric-chip watch">Hiring</span><div class="list-item" style="margin-top:8px"><strong>Partial coverage</strong><div class="small">${d.hiringNote||'Recruiting activity is active in this market.'}</div></div>`;
+  else if(d.hiring)h+=`<span class="metric-chip blue">Hiring</span><div class="list-item" style="margin-top:8px"><strong>Open opportunity</strong><div class="small">${d.hiringNote||'This market is under active recruitment review.'}</div></div>`;
+  else if(d.possible)h+=`<span class="metric-chip blue">Potential territory</span>`;
+  else if(rs.length)h+=`<span class="metric-chip good">Covered</span>`;
+  else h+=`<span class="metric-chip good">In territory</span>`;
+  h+=`</div>`;
+  det.innerHTML=h;
+}
+
+d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us=>{
+  const svg=document.getElementById('map-svg');
+  proj=d3.geoAlbersUsa().scale(1080).translate([480,300]);
+  const pg=d3.geoPath().projection(proj);
+  const states=topojson.feature(us,us.objects.states);
+  const sel=d3.select(svg);
+  sel.append('g').selectAll('path').data(states.features).join('path').attr('class','state').attr('d',pg).attr('fill',d=>gc(d.properties.name)).attr('fill-opacity',d=>go(d.properties.name)).attr('stroke','rgba(132,149,175,0.45)').attr('stroke-width','0.6').on('click',(e,d)=>selState(d.properties.name));
+  sel.append('path').datum(topojson.mesh(us,us.objects.states,(a,b)=>a!==b)).attr('fill','none').attr('stroke','rgba(125,142,166,0.35)').attr('stroke-width','0.5').attr('pointer-events','none').attr('d',pg);
+
+  const ul=sel.append('g');
+  Object.entries(URGENT_PINS).forEach(([name,[lat,lon]])=>{const[x,y]=px(lat,lon);if(!x&&!y)return;const tl=12,r=7;const g=ul.append('g').attr('class','pin').attr('transform',`translate(${x},${y})`).on('click',()=>selState(name));g.append('circle').attr('r',r+4).attr('fill','rgba(239,107,155,0.15)');g.append('ellipse').attr('cx',0).attr('cy',2).attr('rx',5).attr('ry',2).attr('fill','rgba(0,0,0,0.18)');g.append('path').attr('d',`M0,${tl} C-${r},${tl*0.5} -${r},-${r*0.8} 0,-${r} C${r},-${r*0.8} ${r},${tl*0.5} 0,${tl}Z`).attr('fill','#ef6b9b').attr('stroke','white').attr('stroke-width','1.2');g.append('text').attr('x',0).attr('y',-r*0.1).attr('text-anchor','middle').attr('font-size','9').attr('font-weight','bold').attr('font-family','sans-serif').attr('fill','white').attr('pointer-events','none').text('!');g.append('text').attr('y',tl+8).attr('text-anchor','middle').attr('font-size','6').attr('font-family','sans-serif').attr('fill','rgba(25,33,45,0.9)').attr('pointer-events','none').attr('paint-order','stroke').attr('stroke','rgba(255,255,255,0.7)').attr('stroke-width','2.8').text(name.split(' ')[0]);});
+
+  const hl=sel.append('g');
+  Object.entries(HOT_PINS).forEach(([name,[lat,lon]])=>{const[x,y]=px(lat,lon);if(!x&&!y)return;const lbl=name==='California'?'S. Cal':name==='Ohio'?'S. Ohio':name==='Florida'?'N. FL':name==='Washington'?'Wash.':name==='North Carolina'?'N. Carolina':name==='Texas'?'Houston':name==='Wisconsin'?'Wisc.':name.split(' ')[0];const tl=11,r=6.5;const pg=hl.append('g').attr('class','pin').attr('transform',`translate(${x},${y})`).on('click',()=>showMarket(name,'hot'));pg.append('circle').attr('r',r+4).attr('fill','rgba(231,129,89,0.18)');pg.append('ellipse').attr('cx',0).attr('cy',2).attr('rx',5).attr('ry',2).attr('fill','rgba(0,0,0,0.18)');pg.append('path').attr('d',`M0,${tl} C-${r},${tl*0.5} -${r},-${r*0.75} 0,-${r} C${r},-${r*0.75} ${r},${tl*0.5} 0,${tl}Z`).attr('fill',HOT_COLOR).attr('stroke','white').attr('stroke-width','1.2');pg.append('text').attr('x',0).attr('y',-r*0.15).attr('text-anchor','middle').attr('font-size','8').attr('font-family','sans-serif').attr('fill','white').attr('pointer-events','none').text('🔥');if(lbl)pg.append('text').attr('y',tl+8).attr('text-anchor','middle').attr('font-size','6').attr('font-family','sans-serif').attr('fill','rgba(25,33,45,0.9)').attr('pointer-events','none').attr('paint-order','stroke').attr('stroke','rgba(255,255,255,0.7)').attr('stroke-width','2.5').text(lbl);});
+
+  const al=sel.append('g'); const R=9;
+  Object.keys(RSD_LL).forEach(name=>{const[lat,lon]=RSD_LL[name];const[x,y]=px(lat,lon);if(!x&&!y)return;const vp=VPS.find(v=>v.id===RSD_VP[name]);const fill=vp?dk(vp.color,35):'#425571';const ins=RSD_IN[name];const state=RSD_ST[name];const g=al.append('g').attr('class','av-g').attr('transform',`translate(${x},${y})`).on('click',()=>selState(state));g.append('circle').attr('r',R+1.5).attr('fill','rgba(255,255,255,0.85)');g.append('circle').attr('r',R).attr('fill',fill);g.append('text').attr('text-anchor','middle').attr('dominant-baseline','central').attr('font-size',ins.length>2?'4.5':'5.8').attr('font-weight','700').attr('font-family','sans-serif').attr('fill','white').attr('pointer-events','none').text(ins);g.append('text').attr('y',R+8).attr('text-anchor','middle').attr('font-size','6').attr('font-family','sans-serif').attr('fill','rgba(25,33,45,0.9)').attr('pointer-events','none').attr('paint-order','stroke').attr('stroke','rgba(255,255,255,0.75)').attr('stroke-width','2.8').text(name.split(' ').slice(-1)[0]);});
+
+  const tpal=sel.append('g');
+  TPA_TEAM.forEach(p=>{const[lat,lon]=p.ll;const[x,y]=px(lat,lon);if(!x&&!y)return;const g=tpal.append('g').attr('class','av-g').attr('transform',`translate(${x},${y})`).on('click',()=>sw('bn'));g.append('circle').attr('r',R+1.5).attr('fill','rgba(255,255,255,0.85)');g.append('circle').attr('r',R).attr('fill',TPA_DARK);g.append('text').attr('text-anchor','middle').attr('dominant-baseline','central').attr('font-size','4.8').attr('font-weight','700').attr('font-family','sans-serif').attr('fill','white').attr('pointer-events','none').text(p.in);g.append('text').attr('y',R+8).attr('text-anchor','middle').attr('font-size','6').attr('font-family','sans-serif').attr('fill','rgba(25,33,45,0.9)').attr('pointer-events','none').attr('paint-order','stroke').attr('stroke','rgba(255,255,255,0.75)').attr('stroke-width','2.8').text(p.name.split(' ').slice(-1)[0]);});
+
+  const bl=sel.append('g'); const DR=8;
+  BUZZ_TEAM.forEach(p=>{const[lat,lon]=p.ll;const[x,y]=px(lat,lon);if(!x&&!y)return;const g=bl.append('g').attr('class','av-g').attr('transform',`translate(${x},${y})`).on('click',()=>sw('b'));g.append('rect').attr('x',-(DR+2)).attr('y',-(DR+2)).attr('width',(DR+2)*2).attr('height',(DR+2)*2).attr('rx','2').attr('transform','rotate(45)').attr('fill','rgba(255,255,255,0.8)');g.append('rect').attr('x',-DR).attr('y',-DR).attr('width',DR*2).attr('height',DR*2).attr('rx','1.5').attr('transform','rotate(45)').attr('fill',BUZZ_COLOR);g.append('text').attr('text-anchor','middle').attr('dominant-baseline','central').attr('font-size','5.2').attr('font-weight','700').attr('font-family','sans-serif').attr('fill','white').attr('pointer-events','none').text(p.in);g.append('text').attr('y',DR+9).attr('text-anchor','middle').attr('font-size','6').attr('font-family','sans-serif').attr('fill','rgba(25,33,45,0.9)').attr('pointer-events','none').attr('paint-order','stroke').attr('stroke','rgba(255,255,255,0.75)').attr('stroke-width','2.8').text(p.name.split(' ').slice(-1)[0]);});
+
+  buildLegend();
+  buildVPCards();
+  buildBuzz();
+}).catch(()=>{const loading=document.getElementById('loading'); if (loading) loading.textContent='Could not load map. Please check your internet connection and refresh.';});
+</script>
+</body>
+</html>
